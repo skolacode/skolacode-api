@@ -4,21 +4,39 @@ const { Schema } = mongoose;
 
 
 const userSchema = new Schema({
-  githubID: {
-    type: String,
-    require: true,
-  },
-  email: String,
-  role: {
-    type: String,
-    required: true,
-    default: 'writer',
-  },
-  displayName: String,
-  linkedIn: String,
-  github: String,
-  twitter: String,
-  website: String,
+	githubID: {
+		type: String,
+		require: true,
+	},
+	email: {
+		type: String,
+		default: "",
+	},
+	role: {
+		type: String,
+		required: true,
+		default: 'writer',
+	},
+	displayName: {
+		type: String,
+		default: "",
+	},
+	linkedIn: {
+		type: String,
+		default: "",
+	},
+	github: {
+		type: String,
+		default: "",
+	},
+	twitter: {
+		type: String,
+		default: "",
+	},
+	website: {
+		type: String,
+		default: "",
+	},
 });
 
 module.exports = mongoose.model('User', userSchema);
