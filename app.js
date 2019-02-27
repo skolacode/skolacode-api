@@ -5,10 +5,11 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
+const { db } = require('./config/keys');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
-mongoose.connect('mongodb://skolacode-dev:skolacode123@ds255005.mlab.com:55005/skolacode-dev',{ useNewUrlParser: true });
+mongoose.connect(db,{ useNewUrlParser: true });
 
 const app = express();
 
