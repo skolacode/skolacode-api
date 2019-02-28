@@ -10,6 +10,7 @@ const passport = require('passport');
 require('./config/passport-setup');
 
 const { sessionSecret, db } = require('./config/keys');
+
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
