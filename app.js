@@ -12,6 +12,7 @@ require('./config/passport-setup');
 const { sessionSecret, db } = require('./config/keys');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
+const userRouter = require('./routes/user');
 
 mongoose.connect(db,{ useNewUrlParser: true });
 
@@ -42,6 +43,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // router
 app.use('/', indexRouter);
 app.use('/api/v1/oauth', authRouter);
+app.use('/api/v1/user', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

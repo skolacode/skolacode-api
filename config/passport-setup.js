@@ -12,24 +12,24 @@ passport.use(
 		callbackURL: 'http://localhost:8080/api/v1/oauth/github/callback',
 	},
 	(accessToken, refreshToken, profile, done) => {
-		User.find({
+		User.findOne({
 			githubID: profile.id
-		}, (err, docs) => {
+		}, (err, user) => {
 			if (err) {
 				return done(err, null);
 			}
 
-			if (docs.length === 0) {
+			if (!user) {
 				User.create({
 					githubID: profile.id,
 					github: profile.username,
-				}, (e, d) => {
+				}, (e, u) => {
 					if (!e) {
-						return done(e, d);
+						return done(e, u);
 					}
 				});
 			} else {
-				return done(err, docs);
+				return done(err, user);
 			}	
 		});
 	})
