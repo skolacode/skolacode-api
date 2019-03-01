@@ -12,22 +12,15 @@ router.get('/github/callback',
 	(req, res) => {
 		const { _id, role } = req.user;
 
-		jwt.sign({
-			payload: {
-				id: _id,
-				role,
-			}
-		}, jwtSecret, (err, token) => {
-			if (err) {
-				res.status(500).json({
-					error: {
-						message: 'FAILED TO SIGN TOKEN',
-					}
-				});
-			} else {
+		jwt.sign(
+			{ payload: { id: _id, role }},
+			jwtSecret, (err, token) => {
+				if (err) {
+					return res.status(500).json({ error: { message: 'FAILED TO SIGN TOKEN' }});
+				}
+
 				res.redirect(`/?accessToken=${token}`);
-			}
-		});
+			});
 	});
 
 router.get('/github/failed', (req, res) => {
