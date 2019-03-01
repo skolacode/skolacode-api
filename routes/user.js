@@ -9,7 +9,6 @@ router.get('/profile', (req, res) => {
 	res.json(req.user);
 });
 
-
 router.patch('/profile', [
 	check('username').isString(),
 	check('email').isString(),
