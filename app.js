@@ -10,15 +10,20 @@ const passport = require('passport');
 require('./config/passport-setup');
 
 const { sessionSecret, db } = require('./config/keys');
+const  middlewares = require('./middlewares');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
 
-mongoose.connect(db,{ useNewUrlParser: true });
+mongoose.connect(db, { useNewUrlParser: true });
 
 const app = express();
 
-app.use(session({ secret: sessionSecret }));
+app.use(session({
+	secret: sessionSecret,
+	resave: true,
+	saveUninitialized: true
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -43,15 +48,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // router
 app.use('/', indexRouter);
 app.use('/api/v1/oauth', authRouter);
-app.use('/api/v1/user', userRouter);
+app.use('/api/v1/user', middlewares.userAuthentication, userRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
 	next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res) {
+app.use((err, req, res) => {
 	// set locals, only providing error in development
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -62,6 +67,6 @@ app.use(function(err, req, res) {
 });
 
 app.set('port', process.env.PORT || 8080);
-const server = app.listen(app.get('port'), function() {
+const server = app.listen(app.get('port'), () => {
 	console.log('Express server listening on port ', server.address().port);
 });

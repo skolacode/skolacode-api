@@ -7,37 +7,28 @@ const { jwtSecret } = require('../config/keys');
 
 const userAuthentication = (req, res, next) => {
 	const { authorization } = req.headers;
-	
+
 	if (typeof authorization !== 'undefined') {
 		const bearer = authorization.split(' ');
 		const accessToken = bearer[1];
 
 		jwt.verify(accessToken, jwtSecret, (err, decoded) => {
 			if (err) {
-				res.status(403).json({
-					error: {
-						message: INVALID_ACCESS_TOKEN,
-					},
-				});
-			} else {
-				const { id } = decoded.payload;
-
-				User.findById(id, (e, user) => {
-					if (e) {
-						res.status(500).json({
-							error: {
-								message: INTERNAL_SERVER_ERROR,
-							},
-						});
-					} else {
-						req.user = user;
-						next();
-					}
-				});
+				return res.status(401).json({ error: { message: INVALID_ACCESS_TOKEN }});
 			}
+
+			const { id } = decoded.payload;
+
+			User.findById(id, (e, user) => {
+				if (e) {
+					return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR }});
+				}
+				req.user = user;
+				next();
+			});
 		});
 	} else {
-		res.status(403).json({
+		res.status(401).json({
 			error: {
 				message: 'MISSING AUTHORIZATION HEADER',
 			},
