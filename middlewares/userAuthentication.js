@@ -28,11 +28,7 @@ const userAuthentication = (req, res, next) => {
 			});
 		});
 	} else {
-		res.status(401).json({
-			error: {
-				message: 'MISSING AUTHORIZATION HEADER',
-			},
-		});
+		res.status(401).json({ error: { message: 'MISSING AUTHORIZATION HEADER' }});
 	}
 };
 

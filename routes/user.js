@@ -1,14 +1,16 @@
 const express = require('express');
 const { check, validationResult } = require('express-validator/check');
 
-const { INTERNAL_SERVER_ERROR } = require('../constants/errors');
 const router = express.Router();
 const User = require('../models/user');
+const { INTERNAL_SERVER_ERROR } = require('../constants/errors');
 
+// GET USER
 router.get('/profile', (req, res) => {
 	res.json(req.user);
 });
 
+// UPDATE USER
 router.patch('/profile', [
 	check('username').isString(),
 	check('email').isString(),
