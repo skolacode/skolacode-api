@@ -18,7 +18,7 @@ router.get('/github/callback',
 			{ payload: { id: _id, role }},
 			jwtSecret, (err, token) => {
 				if (err) {
-					return res.status(500).json({ error: { message: 'FAILED TO SIGN TOKEN' }});
+					return res.status(500).json({ error: { message: 'FAILED TO SIGN TOKEN' } });
 				}
 				res.redirect(`/?accessToken=${token}`);
 			}

@@ -33,7 +33,11 @@ const articleSchema = new Schema({
 		required: true,
 		default: "reviewing",
 	},
-	author: { type: Schema.Types.ObjectId, ref: 'User' },
+	author: { 
+		type: Schema.Types.ObjectId,
+		ref: 'User',
+		required:true,
+	},
 }, {
 	timestamps: true,
 });

@@ -28,7 +28,7 @@ router.patch('/profile', [
 	const { role, githubID } = req.user;
 	const { _id } = req.user;
 	
-	User.findOneAndUpdate({ _id }, {
+	User.findByIdAndUpdate(_id, {
 		...req.body,
 		role,
 		githubID,

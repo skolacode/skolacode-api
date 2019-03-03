@@ -48,9 +48,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // routes
 app.use('/', indexRouter);
-app.use('/api/v1/oauth', authRouter);
-app.use('/api/v1/user', middlewares.userAuthentication, userRouter);
-app.use('/api/v1/article', articleRouter);
+
+const v1 = '/api/v1';
+app.use(`${v1}/oauth`, authRouter);
+app.use(`${v1}/user`, middlewares.userAuthentication, userRouter);
+app.use(`${v1}/article`, articleRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
