@@ -14,25 +14,21 @@ const userAuthentication = (req, res, next) => {
 
 		jwt.verify(accessToken, jwtSecret, (err, decoded) => {
 			if (err) {
-				return res.status(401).json({ error: { message: INVALID_ACCESS_TOKEN }});
+				return res.status(401).json({ error: { message: INVALID_ACCESS_TOKEN } });
 			}
 
 			const { id } = decoded.payload;
 
 			User.findById(id, (e, user) => {
 				if (e) {
-					return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR }});
+					return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
 				}
 				req.user = user;
 				next();
 			});
 		});
 	} else {
-		res.status(401).json({
-			error: {
-				message: 'MISSING AUTHORIZATION HEADER',
-			},
-		});
+		res.status(401).json({ error: { message: 'MISSING AUTHORIZATION HEADER' } });
 	}
 };
 
