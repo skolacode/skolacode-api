@@ -15,6 +15,8 @@ router.patch('/profile', [
 	check('username').isString(),
 	check('email').isString(),
 	check('displayName').isString(),
+	check('avatarUrl').isString(),
+	check('bio').isString(),
 	check('website').isString(),
 	check('github').isString(),
 	check('twitter').isString(),

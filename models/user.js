@@ -20,6 +20,14 @@ const userSchema = new Schema({
 		type: String,
 		default: "",
 	},
+	avatarUrl: {
+		type: String,
+		default: '',
+	},
+	bio: {
+		type: String,
+		default: '',
+	},
 	linkedIn: {
 		type: String,
 		default: "",
