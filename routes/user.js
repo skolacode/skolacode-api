@@ -1,9 +1,9 @@
 const express = require('express');
-const { check, validationResult } = require('express-validator/check');
+const { check } = require('express-validator/check');
+
+const controller = require('../controller/user');
 
 const router = express.Router();
-const User = require('../models/user');
-const { INTERNAL_SERVER_ERROR } = require('../constants/errors');
 
 // GET USER
 router.get('/profile', (req, res) => {
@@ -21,25 +21,9 @@ router.patch('/profile', [
 	check('github').isString(),
 	check('twitter').isString(),
 	check('linkedIn').isString(),
-], (req, res) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(422).json({ errors: errors.array() });
-	}
-	
-	const { role, githubID } = req.user;
-	const { _id } = req.user;
-	
-	User.findByIdAndUpdate(_id, {
-		...req.body,
-		role,
-		githubID,
-	}, (err, user) => {
-		if (err) {
-			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
-		}
-		return res.json(user);
-	});
-});
+], controller.updateUser);
+
+// GET USER FEEDBACKS
+router.get('/feedbacks', controller.getUserFeedbacks);
 
 module.exports = router;

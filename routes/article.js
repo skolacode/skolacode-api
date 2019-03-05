@@ -1,132 +1,51 @@
 const express = require('express');
-const { check, validationResult } = require('express-validator/check');
+const { check } = require('express-validator/check');
+
+const controller = require('../controller/article');
+const middleware = require('../middlewares');
 
 const router = express.Router();
-const { userAuthentication, userVerification, userRoleVerification } = require('../middlewares');
-const Article = require('../models/article');
-const { INTERNAL_SERVER_ERROR } = require('../constants/errors');
+
 
 // GET ARTICLES
-router.get('/', (req, res) => {
-	Article.find({}, (err, articles) => {
-		if (err) {
-			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR }}); 
-		}
-		res.json(articles);
-	});
-});
+router.get('/', controller.getArticles);
 
 // GET ARTICLE
-router.get('/:id', (req, res) => {
-	const { id } = req.params;
-	Article.findById(id).populate('author').exec(
-		(err, article) => {
-			if (err) {
-				return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR }}); 
-			}
-			res.json(article);
-		}
-	);
-});
+router.get('/:id', controller.getArticle);
 
 // CREATE ARTICLE
 router.post('/', [
-	userAuthentication,
+	middleware.userAuthentication,
 	check('title').not().isEmpty(),
 	check('headerImgUrl').not().isEmpty(),
 	check('content').not().isEmpty(),
-], (req, res) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(422).json({ errors: errors.array() });
-	}
-
-	const { user } = req;
-	const { title, headerImgUrl, content, tags, isPublished } = req.body;
-
-	Article.create({
-		title,
-		headerImgUrl,
-		content,
-		tags,
-		isPublished,
-		author: user._id,
-	}, (err, article) => {
-		if (err) {
-			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
-		}
-
-		res.redirect(`/api/v1/article/${article._id}`);
-	});
-});
+], controller.createArticle);
 
 // UPDATE ARTICLE
 router.patch('/:id', [
-	userAuthentication,
-	userVerification,
+	middleware.userAuthentication,
+	middleware.userArticleVerification,
 	check('title').isString(),
 	check('headerImgUrl').isString(),
 	check('content').isString(),
 	check('tags').isArray(),
 	check('isPublished').isBoolean(),
-], (req, res) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(422).json({ errors: errors.array() });
-	}
-
-	const { id } = req.params;
-	const { title, headerImgUrl, content, tags, isPublished } = req.body;
-
-	Article.findByIdAndUpdate(id, {
-		title,
-		headerImgUrl,
-		content,
-		tags,
-		isPublished,
-	}, (err, article) => {
-		if (err) {
-			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
-		}
-
-		res.redirect(`/api/v1/article/${article._id}`);
-	});
-});
+], controller.updateArticle);
 
 // DELETE ARTICLE
-router.delete('/:id', [userAuthentication, userVerification], (req, res) => {
-	const { id } = req.params;
+router.delete('/:id',[
+	middleware.userAuthentication,
+	middleware.userArticleVerification,
+], controller.deleteArticle);
 
-	Article.findByIdAndDelete(id, (err) => {
-		if (err) {
-			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
-		}
-		res.json({ message: 'SUCCESS' });
-	});
-});
-
-router.patch('/status/:id', [
-	userAuthentication,
-	userRoleVerification,
+// UPDATE ARTICLE STATUS
+router.patch('/:id/status', [
+	middleware.userAuthentication,
+	middleware.userRoleVerification,
 	check('status').isString(),
-], (req, res) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(422).json({ errors: errors.array() });
-	}
+], controller.updateArticleStatus);
 
-	const { status } = req.body;
-	const { id } = req.params;
-
-	Article.findByIdAndUpdate(id, {
-		status,
-	}, (err, article) => {
-		if (err) {
-			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
-		}
-
-		res.redirect(`/api/v1/article/${article._id}`);
-	});
-});
+// GET ARTICLE FEEDBACKS
+router.get('/:id/feedbacks', controller.getArticleFeedbacks);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const Article = require('../models/article');
 const { INTERNAL_SERVER_ERROR, UNAUTHORIZE_USER } = require('../constants/errors');
 
-const userVerification = (req, res, next) => {
+const userArticleVerification = (req, res, next) => {
 	const { user } = req;
 	const { id } = req.params;
 
@@ -19,4 +19,4 @@ const userVerification = (req, res, next) => {
 	});
 };
 
-module.exports = userVerification;
+module.exports = userArticleVerification;
