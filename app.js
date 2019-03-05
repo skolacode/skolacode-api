@@ -6,15 +6,18 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const cors = require('cors');
 
 require('./config/passport-setup');
 
 const { sessionSecret, db } = require('./config/keys');
 const  middlewares = require('./middlewares');
+
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
 const articleRouter = require('./routes/article');
+const feedbackRouter = require('./routes/feedback');
 
 mongoose.connect(db, { useNewUrlParser: true });
 
@@ -46,13 +49,29 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// cors
+const whitelist = ['http://local-skolacode.com:4000'];
+const corsOptions = {
+	origin: function (origin, callback) {
+		if (whitelist.indexOf(origin) !== -1) {
+			callback(null, true);
+		} else {
+			callback(new Error('Not allowed by CORS'));
+		}
+	}
+};
+
+app.use(cors(corsOptions));
+
 // routes
 app.use('/', indexRouter);
 
 const v1 = '/api/v1';
 app.use(`${v1}/oauth`, authRouter);
 app.use(`${v1}/user`, middlewares.userAuthentication, userRouter);
-app.use(`${v1}/article`, articleRouter);
+app.use(`${v1}/articles`, articleRouter);
+app.use(`${v1}/feedbacks`, feedbackRouter);
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

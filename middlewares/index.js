@@ -1,9 +1,11 @@
 const userAuthentication = require('./userAuthentication');
-const userVerification = require('./userVerification');
+const userArticleVerification = require('./userArticleVerification');
 const userRoleVerification = require('./userRoleVerification');
+const userFeedbackVerification = require('./userFeedbackVerification');
 
 module.exports = {
 	userAuthentication,
-	userVerification,
+	userArticleVerification,
 	userRoleVerification,
+	userFeedbackVerification,
 };
