@@ -11,7 +11,7 @@ const userArticleVerification = (req, res, next) => {
 		}
 
 		const { author } = article;
-		if (!user._id.equals(author._id)) {
+		if (!user._id.equals(author)) {
 			return res.status(401).json({ error: { message: UNAUTHORIZE_USER } });
 		}
 

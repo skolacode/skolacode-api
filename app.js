@@ -50,7 +50,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // cors
-const whitelist = ['http://local-skolacode.com:4000'];
+const whitelist = ['http://local-skolacode.com:4000', 'http://localhost:8080'];
 const corsOptions = {
 	origin: function (origin, callback) {
 		if (whitelist.indexOf(origin) !== -1) {
@@ -61,7 +61,7 @@ const corsOptions = {
 	}
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 // routes
 app.use('/', indexRouter);

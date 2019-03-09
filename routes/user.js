@@ -26,4 +26,7 @@ router.patch('/profile', [
 // GET USER FEEDBACKS
 router.get('/feedbacks', controller.getUserFeedbacks);
 
+// GET USER LIKES
+router.get('/likes', controller.getUserLikes);
+
 module.exports = router;

@@ -38,6 +38,11 @@ const articleSchema = new Schema({
 		ref: 'User',
 		required:true,
 	},
+	likesCount: {
+		type: Number,
+		require: true,
+		default: 0,
+	}
 }, {
 	timestamps: true,
 });

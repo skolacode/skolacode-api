@@ -4,6 +4,7 @@ const { INTERNAL_SERVER_ERROR } = require('../constants/errors');
 
 const User = require('../models/user');
 const Feedback = require('../models/feedback');
+const ArticleLike = require('../models/articleLike');
 
 const updateUser = (req, res) => {
 	const errors = validationResult(req);
@@ -41,7 +42,23 @@ const getUserFeedbacks = (req, res) => {
 	}).populate('article');
 };
 
+// GET USER LIKES
+const getUserLikes = (req, res) => {
+	const { user: { _id } } = req;
+
+	ArticleLike.find({
+		author: _id,
+	}, (err, likes) => {
+		if (err) {
+			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
+		}
+
+		res.json(likes);
+	}).populate('article');
+};
+
 module.exports = {
 	updateUser,
 	getUserFeedbacks,
+	getUserLikes,
 };

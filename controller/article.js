@@ -4,6 +4,7 @@ const { INTERNAL_SERVER_ERROR } = require('../constants/errors');
 
 const Article = require('../models/article');
 const Feedback = require('../models/feedback');
+const ArticleLike = require('../models/articleLike');
 
 // GET ARTICLES
 const getArticles = (req, res) => {
@@ -129,6 +130,102 @@ const getArticleFeedbacks = (req, res) => {
 	}).populate('author');
 };
 
+// GET LIKE
+const getLike = (req, res) => {
+	const { user, params: { id } } = req;
+	const { _id } = user;
+
+	ArticleLike.findOne({
+		author: _id,
+		article: id,
+	}, (err, like) => {
+		if (err) {
+			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
+		}
+
+		if (!like) {
+			return res.json({ isLike: false });
+		}
+
+		res.json({ isLike: true });
+	});
+};
+
+// CREATE LIKE
+const createLike = (req, res) => {
+	const { user, params: { id } } = req;
+	const { _id } = user;
+
+	ArticleLike.findOne({
+		author: _id,
+		article: id,
+	}, (err, like) => {
+		if (err) {
+			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
+		}
+
+		if (like) {
+			return res.status(403).json({ error: { message: 'USER ALREADY LIKED THE POST' } });
+		}
+
+		ArticleLike.create({
+			author: _id,
+			article: id,
+		}, (e, l) => {
+			if (e) {
+				return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
+			}
+
+			Article.findById(id, (articleErr, article) => {
+				if (articleErr) {
+					return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
+				}
+				let { likesCount } = article;
+				Article.findByIdAndUpdate(id, {
+					likesCount: likesCount += 1,
+				}, (updateErr) => {
+					if (updateErr) {
+						return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
+					}
+				});
+			});
+
+			res.json(l);
+		});
+	});
+};
+
+// DELETE LIKE
+const deleteLike = (req, res) => {
+	const { user, params: { id } } = req;
+	const { _id } = user;
+
+	ArticleLike.findOneAndRemove({
+		author: _id,
+		article: id,
+	}, (err) => {
+		if (err) {
+			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
+		}
+
+		Article.findById(id, (articleErr, article) => {
+			if (articleErr) {
+				return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
+			}
+			let { likesCount } = article;
+			Article.findByIdAndUpdate(id, {
+				likesCount: likesCount -= 1,
+			}, (updateErr) => {
+				if (updateErr) {
+					return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
+				}
+			});
+		});
+
+		res.json({ meesage: 'SUCCESS' });
+	});
+};
+
 module.exports = {
 	getArticles,
 	getArticle,
@@ -137,4 +234,7 @@ module.exports = {
 	deleteArticle,
 	updateArticleStatus,
 	getArticleFeedbacks,
+	getLike,
+	createLike,
+	deleteLike,
 };

@@ -48,4 +48,13 @@ router.patch('/:id/status', [
 // GET ARTICLE FEEDBACKS
 router.get('/:id/feedbacks', controller.getArticleFeedbacks);
 
+// GET LIKED ARTICLE
+router.get('/:id/like', middleware.userAuthentication, controller.getLike);
+
+// CREATE LIKED ARTICLE
+router.post('/:id/like',middleware.userAuthentication, controller.createLike);
+
+// DELETE LIKED ARTICLE
+router.delete('/:id/like', middleware.userAuthentication, controller.deleteLike);
+
 module.exports = router;
