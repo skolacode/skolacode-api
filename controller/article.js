@@ -37,10 +37,11 @@ const createArticle = (req, res) => {
 	}
 
 	const { user } = req;
-	const { title, headerImgUrl, content, tags, isPublished } = req.body;
+	const { title, description, headerImgUrl, content, tags, isPublished } = req.body;
 
 	Article.create({
 		title,
+		description,
 		headerImgUrl,
 		content,
 		tags,
@@ -63,10 +64,11 @@ const updateArticle = (req, res) => {
 	}
 
 	const { id } = req.params;
-	const { title, headerImgUrl, content, tags, isPublished } = req.body;
+	const { title, description, headerImgUrl, content, tags, isPublished } = req.body;
 
 	Article.findByIdAndUpdate(id, {
 		title,
+		description,
 		headerImgUrl,
 		content,
 		tags,
@@ -94,7 +96,7 @@ const deleteArticle = (req, res) => {
 };
 
 
-// UPDATE ARTICLE
+// UPDATE ARTICLE STATUS
 const updateArticleStatus = (req, res) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {

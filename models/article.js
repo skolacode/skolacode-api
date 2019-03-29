@@ -7,6 +7,10 @@ const articleSchema = new Schema({
 		type: String,
 		require: true,
 	},
+	description: {
+		type: String,
+		require: true,
+	},
 	headerImgUrl: {
 		type: String,
 		require: true,
