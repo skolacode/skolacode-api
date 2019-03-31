@@ -35,7 +35,7 @@ const articleSchema = new Schema({
 	status: {
 		type: String,
 		required: true,
-		default: "reviewing",
+		default: "approved",
 	},
 	author: { 
 		type: Schema.Types.ObjectId,

@@ -8,15 +8,51 @@ const ArticleLike = require('../models/articleLike');
 
 // GET ARTICLES
 const getArticles = (req, res) => {
-	Article.find({}, (err, articles) => {
+	Article.find({}, [], {
+		sort: {
+			createdAt: -1,
+		}
+	}, (err, articles) => {
 		if (err) {
 			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR }}); 
 		}
 		res.json(articles);
-	});
+	}).populate('author');
 };
 
-// GET ARTICLES
+// GET PUBLISHED ARTICLES
+const getPublishedArticles = (req, res) => {
+	Article.find({
+		isPublished: true,
+	}, ['-content'], {
+		sort: {
+			createdAt: -1,
+		}
+	}, (err, articles) => {
+		if (err) {
+			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR }}); 
+		}
+		res.json(articles);
+	}).populate('author');
+};
+
+// GET PUBLISHED ARTICLES
+const getUnpublishedArticles = (req, res) => {
+	Article.find({
+		isPublished: false,
+	}, ['-content'], {
+		sort: {
+			createdAt: -1,
+		}
+	}, (err, articles) => {
+		if (err) {
+			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR }}); 
+		}
+		res.json(articles);
+	}).populate('author');
+};
+
+// GET ARTICLE
 const getArticle = (req, res) => {
 	const { id } = req.params;
 	Article.findById(id).populate('author').exec(
@@ -52,7 +88,7 @@ const createArticle = (req, res) => {
 			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
 		}
 
-		res.redirect(`/api/v1/article/${article._id}`);
+		res.json(article);
 	});
 };
 
@@ -78,7 +114,7 @@ const updateArticle = (req, res) => {
 			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
 		}
 
-		res.redirect(`/api/v1/article/${article._id}`);
+		res.json(article);
 	});
 };
 
@@ -113,7 +149,7 @@ const updateArticleStatus = (req, res) => {
 			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
 		}
 
-		res.redirect(`/api/v1/article/${article._id}`);
+		res.json(article);
 	});
 };
 
@@ -230,6 +266,8 @@ const deleteLike = (req, res) => {
 
 module.exports = {
 	getArticles,
+	getPublishedArticles,
+	getUnpublishedArticles,
 	getArticle,
 	createArticle,
 	updateArticle,

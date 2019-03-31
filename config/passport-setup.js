@@ -26,6 +26,9 @@ passport.use(
 			}
 			const { id, username, displayName } = profile;
 			const { avatar_url, bio } = profile._json;
+			console.log('PROFILE => ', profile);
+			console.log('==============================');
+			console.log('PROFILE JSON => ', profile._json);
 
 			if (!user) {
 				return User.create({
