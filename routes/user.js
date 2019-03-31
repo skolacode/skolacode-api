@@ -29,4 +29,10 @@ router.get('/feedbacks', controller.getUserFeedbacks);
 // GET USER LIKES
 router.get('/likes', controller.getUserLikes);
 
+// GET USER PUBLISHED ARTICLES
+router.get('/articles/published', controller.getUserPublishedArticles);
+
+// GET USER UNPUBLISHED ARTICLES
+router.get('/articles/unpublished', controller.getUserUnpublishedArticles);
+
 module.exports = router;

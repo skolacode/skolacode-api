@@ -20,7 +20,7 @@ router.get('/github/callback',
 				if (err) {
 					return res.status(500).json({ error: { message: 'FAILED TO SIGN TOKEN' } });
 				}
-				res.redirect(`/?accessToken=${token}`);
+				res.redirect(`http://localhost:3000/profile?accessToken=${token}`);
 			}
 		);
 	}

@@ -7,6 +7,10 @@ const articleSchema = new Schema({
 		type: String,
 		require: true,
 	},
+	description: {
+		type: String,
+		require: true,
+	},
 	headerImgUrl: {
 		type: String,
 		require: true,
@@ -31,7 +35,7 @@ const articleSchema = new Schema({
 	status: {
 		type: String,
 		required: true,
-		default: "reviewing",
+		default: "approved",
 	},
 	author: { 
 		type: Schema.Types.ObjectId,

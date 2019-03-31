@@ -10,14 +10,21 @@ const router = express.Router();
 // GET ARTICLES
 router.get('/', controller.getArticles);
 
+// GET PUBLISHED ARTICLES
+router.get('/published', controller.getPublishedArticles);
+
+// GET UNPUBLISHED ARTICLES
+router.get('/unpublished', controller.getUnpublishedArticles);
+
 // GET ARTICLE
 router.get('/:id', controller.getArticle);
 
 // CREATE ARTICLE
 router.post('/', [
 	middleware.userAuthentication,
-	check('title').not().isEmpty(),
 	check('headerImgUrl').not().isEmpty(),
+	check('title').not().isEmpty(),
+	check('description').not().isEmpty(),
 	check('content').not().isEmpty(),
 ], controller.createArticle);
 
@@ -26,6 +33,7 @@ router.patch('/:id', [
 	middleware.userAuthentication,
 	middleware.userArticleVerification,
 	check('title').isString(),
+	check('description').isString(),
 	check('headerImgUrl').isString(),
 	check('content').isString(),
 	check('tags').isArray(),
