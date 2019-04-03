@@ -1,6 +1,5 @@
 # skolacode-api
-SKOLACODE.com is still under developement. This is the back-end(API) code for the website.
-It is still under development and will be launching soon.
+SKOLACODE is a coding school that are offering courses and helps developers in tech problems. Courses that we offer are all up to date and relevent with the industry. This is the back-end(API) code for the website. SKOLACODE.com is still under developement and will be launching soon.
 
 **Please take note that `dev` branch are the latest branch**
 
