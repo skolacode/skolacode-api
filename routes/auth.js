@@ -10,7 +10,7 @@ router.get('/github', passport.authenticate('github'));
 
 // CALLBACK AFTER LOGIN
 router.get('/github/callback',
-	passport.authenticate('github', { failureRedirect: '/api/v1/github/failed' }),
+	passport.authenticate('github', { failureRedirect: 'http://localhost:3000/login?error=unauthorize' }),
 	(req, res) => {
 		const { _id, role } = req.user;
 		

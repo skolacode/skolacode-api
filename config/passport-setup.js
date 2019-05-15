@@ -11,6 +11,8 @@ const checkValue = (val) => {
 	return '';
 };
 
+const whiteListUser = ['aibrahim3546'];
+
 passport.use(
 	new GitHubStrategy({
 		clientID: github.clientID,
@@ -18,29 +20,31 @@ passport.use(
 		callbackURL: 'http://localhost:8080/api/v1/oauth/github/callback',
 	},
 	(accessToken, refreshToken, profile, done) => {
-		User.findOne({
-			githubID: profile.id
-		}, (err, user) => {
-			if (err) {
-				return done(err, null);
-			}
-			const { id, username, displayName } = profile;
-			const { avatar_url, bio } = profile._json;
-			console.log('PROFILE => ', profile);
-			console.log('==============================');
-			console.log('PROFILE JSON => ', profile._json);
+		const { id, username, displayName } = profile;
+		const { avatar_url, bio } = profile._json;
 
-			if (!user) {
-				return User.create({
-					githubID: id,
-					github: checkValue(username),
-					displayName: checkValue(displayName),
-					bio: checkValue(bio),
-					avatarUrl: checkValue(avatar_url),
-				}, (e, u) => done(e, u));
-			}
-			
-			return done(err, user);
-		});
+		if (whiteListUser.indexOf(username) !== -1) {
+			User.findOne({
+				githubID: profile.id
+			}, (err, user) => {
+				if (err) {
+					return done(err, null);
+				}
+	
+				if (!user) {
+					return User.create({
+						githubID: id,
+						github: checkValue(username),
+						displayName: checkValue(displayName),
+						bio: checkValue(bio),
+						avatarUrl: checkValue(avatar_url),
+					}, (e, u) => done(e, u));
+				}
+				
+				return done(err, user);
+			});
+		} else {
+			return done(null, null);
+		}
 	})
 );

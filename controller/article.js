@@ -36,7 +36,7 @@ const getPublishedArticles = (req, res) => {
 	}).populate('author');
 };
 
-// GET PUBLISHED ARTICLES
+// GET UNPUBLISHED ARTICLES
 const getUnpublishedArticles = (req, res) => {
 	Article.find({
 		isPublished: false,
