@@ -65,6 +65,10 @@ const getUserPublishedArticles = (req, res) => {
 	Article.find({
 		isPublished: true,
 		author: _id,
+	}, [], {
+		sort: {
+			updatedAt: -1,
+		}
 	}, (err, articles) => {
 		if (err) {
 			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });
@@ -81,6 +85,10 @@ const getUserUnpublishedArticles = (req, res) => {
 	Article.find({
 		isPublished: false,
 		author: _id,
+	}, [], {
+		sort: {
+			updatedAt: -1,
+		}
 	}, (err, articles) => {
 		if (err) {
 			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR } });

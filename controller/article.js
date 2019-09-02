@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator/check');
+const mongoose = require('mongoose');
 
 const { INTERNAL_SERVER_ERROR } = require('../constants/errors');
 
@@ -10,7 +11,7 @@ const ArticleLike = require('../models/articleLike');
 const getArticles = (req, res) => {
 	Article.find({}, [], {
 		sort: {
-			createdAt: -1,
+			updatedAt: -1,
 		}
 	}, (err, articles) => {
 		if (err) {
@@ -22,17 +23,33 @@ const getArticles = (req, res) => {
 
 // GET PUBLISHED ARTICLES
 const getPublishedArticles = (req, res) => {
+	const { cursor } = req.query;
+	const limit = 50;
+
 	Article.find({
 		isPublished: true,
 	}, ['-content'], {
 		sort: {
-			createdAt: -1,
-		}
+			updatedAt: -1,
+		},
+		limit,
+		...(parseInt(cursor) && {skip: parseInt(cursor)})
 	}, (err, articles) => {
 		if (err) {
 			return res.status(500).json({ error: { message: INTERNAL_SERVER_ERROR }}); 
 		}
-		res.json(articles);
+
+		let newCursor = 1;
+
+		if (cursor) {
+			newCursor = (parseInt(cursor) + 1) * limit;
+		}
+
+		if (articles.length !== limit) {
+			newCursor = 0;
+		}
+
+		res.json({ items: articles, cursor: newCursor });
 	}).populate('author');
 };
 
@@ -42,7 +59,7 @@ const getUnpublishedArticles = (req, res) => {
 		isPublished: false,
 	}, ['-content'], {
 		sort: {
-			createdAt: -1,
+			updatedAt: -1,
 		}
 	}, (err, articles) => {
 		if (err) {
